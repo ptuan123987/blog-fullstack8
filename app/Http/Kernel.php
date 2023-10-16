@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\CheckCanCreatePost;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -66,6 +67,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'checkUserLogin' => \App\Http\Middleware\Client\CheckUserLogin::class,
         'checkAdminLogin' => \App\Http\Middleware\Admin\CheckAdminLogin::class,
-        'checkAdminDelete' => \App\Http\Middleware\Admin\CheckAdminDelete::class
+        'checkAdminDelete' => \App\Http\Middleware\Admin\CheckAdminDelete::class,
+        'checkCanCreatePost' => CheckCanCreatePost::class
     ];
 }

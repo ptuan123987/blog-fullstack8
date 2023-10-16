@@ -5,7 +5,6 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\AboutController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LoginController;
@@ -37,7 +36,7 @@ Route::prefix('/blogs')->group(function(){
     Route::post('/comment/reply', [PostController::class, 'postReply'])->name('post.reply')->middleware('checkUserLogin');
     Route::post('/post/like', [PostController::class, 'postLike'])->name('post.like')->middleware('checkUserLogin');
     Route::delete('/post/{id}/uncomment', [PostController::class, 'postUnComment'])->name('post.uncomment')->middleware('checkUserLogin');
-    Route::delete('/post/{id}/uncommentreply', [PostController::class, 'postUnCommentReply'])->name('post.uncommentreply')->middleware('checkUserLogin');
+    Route::delete('/post/{id}/uncommentreply', [PostController::class, 'postUnCommentReply'])->name('post.uncommentreply')->middleware('checkUserLogin','can');
 });
 
 
@@ -50,17 +49,17 @@ Route::prefix('/account')->group(function(){
     Route::get('/profile-setting', [AccountController::class, 'settingAccount'])->middleware('checkUserLogin');
     Route::post('/change-avatar', [AccountController::class, 'changeAvatar']);
     Route::put('/update-profile', [AccountController::class, 'updateProfile']);
-    Route::resource('/posts', PostController::class);
-
+    Route::get('/posts', [PostController::class, 'create'])->middleware('checkUserLogin' );
+    Route::post('/posts', [PostController::class, 'store'])->middleware('checkUserLogin')->name('post.store');
 });
 
 Route::get('login/{social}', [
     SocialAccountController::class,'redirectToProvider'
-])->name('social.login');
+    ])->name('social.login');
 
 Route::get('callback/{social}', [
-    SocialAccountController::class,'handleProviderCallback'
-])->name('social.callback');
+        SocialAccountController::class,'handleProviderCallback'
+        ])->name('social.callback');
 
 
 
@@ -70,6 +69,8 @@ Route::post('/contact', [ContactController::class, 'sendEmailContact'])->name('c
 /// dashboard admin
 
 Route::prefix('/admin')->middleware('checkAdminLogin')->group(function(){
+
+    Route::resource('/posts', AdminPostController::class)->middleware('checkUserLogin');
     Route::get('/login', [LoginController::class, 'index'])->withoutMiddleware('checkAdminLogin');
     Route::post('/login', [LoginController::class, 'checkAdminLogin'])->name('admin.login')->withoutMiddleware('checkAdminLogin');
     Route::get('/logout', [LoginController::class, 'logout']);
@@ -80,7 +81,6 @@ Route::prefix('/admin')->middleware('checkAdminLogin')->group(function(){
     Route::delete('/categories/{id}/delete', [CategoryController::class, 'destroy'])->name('categories.destroy')->middleware('checkAdminDelete');
     Route::resource('/tags', TagController::class);
     Route::delete('/tags/{id}/delete', [TagController::class, 'destroy'])->name('tags.destroy')->middleware('checkAdminDelete');
-    Route::resource('/posts', AdminPostController::class);
     Route::delete('/posts/{id}/delete', [AdminPostController::class, 'destroy'])->name('posts.destroy')->middleware('checkAdminDelete');
     Route::resource('/post-tags', PostTagController::class);
     Route::resource('/comments', CommentController::class);

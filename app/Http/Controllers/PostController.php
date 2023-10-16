@@ -71,7 +71,13 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('Dashboard.post.create', compact('categories', 'superUsers'));
+
+        if (Auth::check()) {
+            $categories = Category::all();
+            return view('Frontend.post.create', compact('categories'));
+        } else {
+            return redirect()->route('login');
+        }
 
     }
 
@@ -80,7 +86,20 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $post = new Post();
+        $post->title = $data['title'];
+        $post->content = $data['content'];
+        $post->category_id = $data['category_id'];
+        $post->user_id = Auth::id();
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('uploads', 'public');
+            $post->image = $imagePath;
+        }
+        $post->save();
+        return redirect('/')->with('success', 'Bài viết đã được tạo thành công.');
     }
 
     /**

@@ -24,9 +24,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/owl.css') }}">
     <!--
 
-TemplateMo 551 Stand Blog
 
-https://templatemo.com/tm-551-stand-blog
 
 -->
 </head>
@@ -47,7 +45,7 @@ https://templatemo.com/tm-551-stand-blog
     <header>
         <nav class="navbar navbar-expand-lg">
             <div class="container">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="/">
                     <h2>Blog 8<em>.</em></h2>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
