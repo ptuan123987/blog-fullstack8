@@ -24,7 +24,7 @@ class LoginController extends Controller
         $remember_pass = $request->remember ? true : false;
 
         if(Auth::attempt($data_infor, $remember_pass)){
-            return redirect()->intended('/admin');
+            return redirect('/admin/posts');
         }
         toastr()->timeOut(2000)
             ->addError('Tài khoản hoặc mật khẩu không đúng');
