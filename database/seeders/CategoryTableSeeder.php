@@ -23,6 +23,9 @@ class CategoryTableSeeder extends Seeder
         Category::create([
             'name' => 'Công nghệ '
         ]);
+        Category::create([
+            'name' => 'Laravel'
+        ]);
 
     }
 }
