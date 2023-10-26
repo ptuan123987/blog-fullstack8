@@ -99,7 +99,7 @@ class PostController extends Controller
             $post->image = $imagePath;
         }
         $post->save();
-        return redirect('/')->with('success', 'Bài viết đã được tạo thành công.');
+        return redirect("/")->with('success', 'Bài viết đã được tạo thành công.');
     }
 
     /**
@@ -170,10 +170,7 @@ class PostController extends Controller
             'message' => 'required|max:500|min:1',
         ]);
         if ($validator->fails()) {
-            // return response()->json([
-            //     'status' => false,
-            //     'errors' => $validator->errors()
-            // ]);
+
             return redirect()->back()->withErrors($validator)->withInput();
         } else {
             $comment = new PostComment();

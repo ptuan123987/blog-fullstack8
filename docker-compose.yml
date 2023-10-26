@@ -1,0 +1,64 @@
+version: '3.8'
+services:
+  app:
+    build:
+      args:
+        user: tuanphan
+        uid: 1000
+      context: ./devops/
+      dockerfile: Dockerfile
+    image: laravel-blog
+    restart: unless-stopped
+    container_name: blog
+    working_dir: /var/www/html/
+    volumes:
+      - ./:/var/www/html/
+    networks:
+      - photos
+
+  nginx:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    container_name: nginx
+    ports:
+      - 8080:80
+    volumes:
+      - ./:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d/
+      - ./nginx/nginx_log:/var/log/nginx
+      - ./nginx/php-fpm/php-fpm.log:/var/log/php-fpm.log
+    networks:
+      - photos
+
+  db:
+    image: mysql
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: blog
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_USER: tuanphan
+      MYSQL_PASSWORD: 12345
+    ports:
+      - "3306:3306"
+    volumes :
+      - ./nginx/mysql/data:/var/lib/mysql
+    networks:
+      - photos
+
+#   phpmyadmin:
+#     image : phpmyadmin:fpm-alpine
+#     container_name: phpmyadmin
+#     ports :
+#       - "3400:80"
+#     depends_on:
+#       - db
+#     links:
+#       - db
+#     networks:
+#       - photos
+
+#Docker Networks
+networks:
+  photos:
+    driver: bridge
